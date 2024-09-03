@@ -30,7 +30,7 @@ Download the latest release from [GitHub Releases](https://github.com/mpkondrash
 
 ## Requirements
 
-QeVR supports Linux, Windows and macOS x64 bit platforms
+QeVR supports Windows (x64 platform) and macOS (ARM/x64 platforms)
 
 ## Configuration
 
