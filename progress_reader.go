@@ -1,3 +1,11 @@
+/*
+Sandboxer (c) 2024 by Mikhail Kondrashin (mkondrashin@gmail.com)
+This software is distributed under MIT license as stated in LICENSE file
+
+progress_reader.go
+
+Reader that callback function to report progress
+*/
 package main
 
 import "io"

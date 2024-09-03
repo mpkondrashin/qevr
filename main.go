@@ -4,7 +4,7 @@ This software is distributed under MIT license as stated in LICENSE file
 
 main.go
 
-Installer main file
+QeVR main file
 */
 package main
 
@@ -23,10 +23,8 @@ import (
 )
 
 func FatalWarning(title, text string) {
-	//dialog.ShowInformation("Information", "This is a sample message", s.window)
 	a := app.New()
 	w := a.NewWindow("QeVR Error: " + title)
-	//w.SetMaster() // will it exit the application?
 	w.SetContent(container.NewVBox(
 		widget.NewLabel(text),
 		widget.NewButton("Ok", func() { a.Quit() }),
@@ -76,7 +74,6 @@ func main() {
 		FatalWarning("SetupLogging Error", msg)
 	}
 	defer close()
-	//log.Printf("Start. Version %s Build %s", globals.Version, globals.Build)
 	log.Printf("OS: %s (%s)", runtime.GOOS, runtime.GOARCH)
 	log.Print("Starting Wizard")
 	configPath, err := ConfigFilePath()

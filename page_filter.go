@@ -2,9 +2,9 @@
 Sandboxer (c) 2024 by Mikhail Kondrashin (mkondrashin@gmail.com)
 Software is distributed under MIT license as stated in LICENSE file
 
-page_token.go
+page_filer.go
 
-Provide Vision One token and domain
+Pick filters
 */
 package main
 
@@ -41,7 +41,9 @@ func (p *PageFilter) Content() fyne.CanvasObject {
 	p.choice.SetSelected(FilterTypesLabels[p.wiz.config.Filter.Type])
 	p.list = widget.NewMultiLineEntry()
 	p.list.SetText(strings.Join(p.wiz.config.Filter.Networks, "\n"))
-	hintLabel := widget.NewLabel("Specify networks in form 2.1.0.0/24")
+	hintLabel := widget.NewLabel(`Specify networks in form "2.1.0.0/24" (without quites).
+Put one network per line.
+"#" character can be used for comment.`)
 	return container.NewVBox(p.choice, p.list, hintLabel)
 }
 
@@ -49,23 +51,10 @@ func (p *PageFilter) Choice(chosen string) {
 	log.Println("PageFilter->Choice: ", chosen)
 }
 
-func (p *PageFilter) Run() {
-	// No need to load, config is loaded when application started
-	//	err := installer.LoadConfig()
-	//	if err != nil {
-	//		logging.Errorf("LoadConfig: %v", err)
-	//		dialog.ShowError(err, win)
-	//	}
-	//fmt.Println("Run" + p.Name())
-}
-
 //ParseCIDR: takes a string representing an IP/mask and returns an IP and an IPNet
 //IPNet.Contains: c
 
 func (p *PageFilter) AquireData(config *Config) error {
-	//if p.choice.Selected == "" {
-	//	return fmt.Errorf("choose either \"%s\" or \"%s\"", filter, rFilter)
-	//}
 	var ok bool
 	config.Filter.Type, ok = MapFilterTypeLabelFromString[p.choice.Selected]
 	if !ok {
@@ -75,6 +64,7 @@ func (p *PageFilter) AquireData(config *Config) error {
 
 	config.Filter.Networks = nil
 	for _, s := range strings.Split(p.list.Text, "\n") {
+		config.Filter.Networks = append(config.Filter.Networks, s)
 		comment := strings.Index(s, "#")
 		if comment != -1 {
 			s = s[:comment]
@@ -88,7 +78,6 @@ func (p *PageFilter) AquireData(config *Config) error {
 			return err
 		}
 		netsList = append(netsList, net)
-		config.Filter.Networks = append(config.Filter.Networks, s)
 	}
 	p.wiz.model = NewModel().SetAccept(func(s string) bool {
 		if config.Filter.Type == FilterTypeNoFilter {

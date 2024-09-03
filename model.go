@@ -1,3 +1,11 @@
+/*
+Sandboxer (c) 2024 by Mikhail Kondrashin (mkondrashin@gmail.com)
+This software is distributed under MIT license as stated in LICENSE file
+
+model.go
+
+Manage data structure for incoming CVE list
+*/
 package main
 
 import (

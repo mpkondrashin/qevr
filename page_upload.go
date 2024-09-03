@@ -2,9 +2,9 @@
 Sandboxer (c) 2024 by Mikhail Kondrashin (mkondrashin@gmail.com)
 This software is distributed under MIT license as stated in LICENSE file
 
-page_folder.go
+page_upload.go
 
-Pick destination folder
+Upload eVR CSV to SMS
 */
 package main
 
@@ -44,16 +44,9 @@ func (p *PageUpload) Next(previousPage PageIndex) PageIndex {
 func (p *PageUpload) Content() fyne.CanvasObject {
 	p.progressBar = widget.NewProgressBar()
 	p.statusLabel = widget.NewLabel("")
-	//	var copyButton *widget.Button
-	//copyButton = widget.NewButton("Copy Files",
-	//func() {
-	//	copyButton.Disable()
-
-	//})
 	return container.NewVBox(
 		p.progressBar,
 		p.statusLabel,
-		//copyButton,
 	)
 }
 

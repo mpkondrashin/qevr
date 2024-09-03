@@ -4,7 +4,7 @@ Software is distributed under MIT license as stated in LICENSE file
 
 page_intro.go
 
-First installer page
+Intro page
 */
 package main
 
@@ -48,9 +48,6 @@ func (p *PageIntro) Content() fyne.CanvasObject {
 	report := widget.NewRichTextFromMarkdown(IntoText)
 	report.Wrapping = fyne.TextWrapWord
 
-	//noteMarkdown := widget.NewRichTextFromMarkdown("NoteText")
-	//noteMarkdown.Wrapping = fyne.TextWrapWord
-
 	repoURL, _ := url.Parse("https://github.com/mpkondrashin/qevr")
 	repoLink := widget.NewHyperlink("QeVR repository on GitHub", repoURL)
 
@@ -66,41 +63,14 @@ func (p *PageIntro) Content() fyne.CanvasObject {
 		titleLabel,
 		versionLabel,
 		report,
-		//noteMarkdown,
 		container.NewHBox(repoLink, licenseButton),
 	)
-}
-
-func (p *PageIntro) Run() {
-	//	fmt.Println("Run" + p.Name())
-	//	fmt.Println("Type ", p.wiz.installer.config.GetString(config.Engine.String()))
-	//
-	// p.sandboxRadio.SetSelected(p.wiz.installer.config.SandboxType.String())
 }
 
 func (p *PageIntro) AquireData(config *Config) error {
 	// check acept license
 	return nil
 }
-
-/*
-func LicenseText() string {
-	filePath := "embed/LICENSE"
-	licFile, err := embedFS.Open(filePath)
-	if err != nil {
-		return "reading error"
-	}
-	defer func() {
-		licFile.Close()
-	}()
-	licBytes, err := io.ReadAll(licFile)
-	if err != nil {
-		return "reading error"
-	}
-	return string(licBytes)
-
-}
-*/
 
 func LicenseText() string {
 	return `MIT License

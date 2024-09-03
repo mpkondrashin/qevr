@@ -2,9 +2,9 @@
 Sandboxer (c) 2024 by Mikhail Kondrashin (mkondrashin@gmail.com)
 This software is distributed under MIT license as stated in LICENSE file
 
-page_folder.go
+page_source.go
 
-Pick destination folder
+Pick source file path
 */
 package main
 
@@ -48,7 +48,7 @@ func (p *PageSource) Content() fyne.CanvasObject {
 		folderDialog.Show()
 	})
 	return container.NewVBox(labelFolder,
-		container.NewBorder(nil, nil, nil, folderButton, p.folderEntry)) // p.folderEntry, folderButton)
+		container.NewBorder(nil, nil, nil, folderButton, p.folderEntry))
 }
 
 func (p *PageSource) AquireData(config *Config) error {

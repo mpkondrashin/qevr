@@ -4,7 +4,7 @@ Software is distributed under MIT license as stated in LICENSE file
 
 wizard.go
 
-Installation wizard
+QeVR wizard framework
 */
 package main
 
@@ -106,17 +106,13 @@ func NewWizard(config *Config) *Wizard {
 		app:         app.NewWithID("github.com/mpkondrashin/opsalyzer-release"),
 		pagesList:   container.NewVBox(),
 		buttonsLine: container.NewHBox(),
-		//model:       NewModel(),
 	}
 	w.app.Lifecycle()
 	w.win = w.app.NewWindow("QeVR")
 	w.win.Resize(fyne.NewSize(600, 400))
-	//c.win.SetFixedSize(true)
 	w.win.SetMaster()
 	w.firstPage = w.Pages()
 	w.currentPage = w.firstPage
-	//prtScr := &desktop.CustomShortcut{KeyName: fyne.KeyI, Modifier: fyne.KeyModifierControl}
-	//w.win.Canvas().AddShortcut(prtScr, w.captureWindowContents)
 	w.win.SetContent(w.Window())
 	return w
 }
@@ -132,39 +128,8 @@ func (w *Wizard) Pages() PageIndex {
 	w.pages[pgSMS] = &PageSMS{BasePage: NewBasePage(w)}
 	w.pages[pgUpload] = &PageUpload{BasePage: NewBasePage(w)}
 	w.pages[pgFinish] = &PageFinish{BasePage: NewBasePage(w)}
-	//w.pages[pgProxy] = &PageProxy{BasePage: NewBasePage(w)}
-	//w.pages[pgSettingsVO] = &PageVOToken{BasePage: NewBasePage(w)}
-	//w.pages[pgSettingsDD] = &PageDDAnSettings{BasePage: NewBasePage(w)} //, Config: viper.GetViper()}
-	//w.pages[pgInstallation] = &PageInstallation{BasePage: NewBasePage(w)}
-	//w.pages[pgFinish] = &PageFinish{BasePage: NewBasePage(w)}
-
-	/*
-		cmp := semver.Compare(globals.Version, w.installer.config.GetVersion())
-		logging.Infof("Installer version: %s. Config version %s. Compare %d", globals.Version, w.installer.config.GetVersion(), cmp)
-		switch cmp {
-		case -1:
-			return pgDowngrade
-		case 0:
-			return pgReinstall
-		case 1:
-			return pgUpgrade
-		}
-	*/
 	return pgIntro
 }
-
-/*
-// DELETE
-	func (c *NSHIControl) SaveScreenShots() {
-		time.Sleep(1 * time.Second)
-		for c.current = 0; c.current < len(c.pages); c.current++ {
-			c.win.SetContent(c.Window(c.pages[c.current]))
-			c.win.Show()
-			c.CaptureImage()
-			time.Sleep(1 * time.Second)
-		}
-	}
-*/
 
 func (c *Wizard) Window() fyne.CanvasObject {
 	p := c.pages[c.currentPage]
@@ -229,7 +194,7 @@ func (c *Wizard) Quit() {
 		log.Printf("AquireData: %v", err)
 		dialog.ShowError(err, c.win)
 	}
-	//dialog.ShowConfirm("Sandboxer", "Exit?", )
+	//dialog.ShowConfirm("QeVR", "Exit?", )
 	c.app.Quit()
 }
 

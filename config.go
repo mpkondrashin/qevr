@@ -1,3 +1,11 @@
+/*
+Sandboxer (c) 2024 by Mikhail Kondrashin (mkondrashin@gmail.com)
+This software is distributed under MIT license as stated in LICENSE file
+
+config.go
+
+QeVR configuration management
+*/
 package main
 
 import (
@@ -23,7 +31,7 @@ filter:
 output:
   target: SMS
   file:
-    prefix: "dmz"
+    suffix: "dmz"
     folder: "C:\tmp"
   sms:
     address: "1.2.3.4"
@@ -33,15 +41,12 @@ output:
 
 const configFileName = "config.yaml"
 
-// Include only entities that mack the list below
-// Include all entities that do no match the list below
-//
 //go:generate enum -type=FilterType -names=NoFilter,Include,Exclude
 
 var FilterTypesLabels = []string{
 	"No filtering",
-	"Include only entities that mack the list below",       //"Leave entities with these IPs only"
-	"Include all entities that do no match the list below", //"Remove entities for these IPs"
+	"Include only entities that match the list below", //"Leave entities with these IPs only"
+	"Omit all entities that match the list below",     //"Remove entities for these IPs"
 }
 
 var MapFilterTypeLabelFromString = map[string]FilterType{
@@ -69,7 +74,7 @@ type (
 	}
 
 	File struct {
-		Prefix string `yaml:"prefix,omitempty"`
+		Suffix string `yaml:"suffix,omitempty"`
 		Folder string `yaml:"folder,omitempty"`
 	}
 

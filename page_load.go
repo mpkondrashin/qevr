@@ -2,9 +2,9 @@
 Sandboxer (c) 2024 by Mikhail Kondrashin (mkondrashin@gmail.com)
 This software is distributed under MIT license as stated in LICENSE file
 
-page_copy.go
+page_upload.go
 
-Do actual installation
+Read CSV file
 */
 package main
 
@@ -50,7 +50,6 @@ func (p *PageLoad) Content() fyne.CanvasObject {
 }
 
 func (p *PageLoad) Run() {
-	//p.wiz.model = NewModel()
 	p.statusLabel.SetText("Loading...")
 	size, err := FileSize(p.wiz.config.Source)
 	if err != nil {
@@ -85,10 +84,6 @@ func (p *PageLoad) Run() {
 		return
 	}
 }
-
-//func (p *PageInstallation) AquireData(installer *Installer) error {
-//	return nil
-//}
 
 func FileSize(filePath string) (int64, error) {
 	fileInfo, err := os.Stat(filePath)

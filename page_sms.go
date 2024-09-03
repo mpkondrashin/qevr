@@ -2,9 +2,9 @@
 Sandboxer (c) 2024 by Mikhail Kondrashin (mkondrashin@gmail.com)
 This software is distributed under MIT license as stated in LICENSE file
 
-page_folder.go
+page_sms.go
 
-Pick destination folder
+Get SMS access credentials
 */
 package main
 
@@ -75,22 +75,9 @@ func (p *PageSMS) AquireData(config *Config) error {
 }
 
 func (p *PageSMS) Upload() error {
-	//curl -k --header "X-SMS-API-KEY: <string>" -F "file=@ScanSample.csv"
-	//"https://<sms_server>/vulnscanner/import?&vendor=Example&product=VulnScanner&version=2.2
-	//&runtime=2018-12-15T13:01:15.255Z/"
-	// curl -k --header "X-SMS-API-KEY: 37F9C284-5A64-4659-A6DC-306E6332DAE5" -F "file=@out.csv" "https://10.38.50.89/vulnscanner/import?&vendor=Example&product=VulnScanner&version=2.2&runtime=2018-12-15T13:01:15.255Z/"
 	runTime := time.Now().UTC().Format("2006-01-02T15:04:05.000Z")
 	url := fmt.Sprintf("https://%s/vulnscanner/import?vendor=SMS-Standard&product=QeVR&version=1&runtime=%s/", p.wiz.config.Output.SMS.Address, runTime)
 
-	/*pReader, pWriter := io.Pipe()
-	defer pWriter.Close()
-	defer pReader.Close()
-	go func() {
-		err := p.wiz.model.Save(pWriter)
-		if err != nil {
-			log.Println(err)
-		}
-	}()*/
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
 	fileName := fmt.Sprintf("qevr_%s.csv", time.Now().Format("20060102"))
@@ -98,9 +85,7 @@ func (p *PageSMS) Upload() error {
 	if err != nil {
 		return err
 	}
-	//formFile.Write([]byte(`IP_ADDRESS,CVE_IDS,SEVERITY
-	//"1.4.1.2","CVE-1-1","MEDIUM"
-	//`))
+
 	err = p.wiz.model.Save(formFile)
 	if err != nil {
 		return err
@@ -132,7 +117,6 @@ func (p *PageSMS) Upload() error {
 		if err != nil {
 			return fmt.Errorf("failed to read response body: %w", err)
 		}
-		//log.Println("Response Body:", string(body))
 		return fmt.Errorf("error code: %d\n%s", resp.StatusCode, string(body))
 	}
 	return nil
