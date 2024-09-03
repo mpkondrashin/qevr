@@ -1,7 +1,7 @@
 # QeVR
 
 <p align="center">
-  <img src="blob/main/logo.jpeg" alt="QeVR Logo" width="200">
+  <img src="logo.jpeg" alt="QeVR Logo" width="200">
 </p>
 
 
