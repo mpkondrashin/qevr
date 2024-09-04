@@ -29,7 +29,11 @@ func NewCSV(fileName string) *CSV {
 	}
 }
 
-func (c *CSV) Load(progress func(int), callback func(ip, cve string)) error {
+func (c *CSV) String() string {
+	return fmt.Sprintf("IP column: %d, CVE column: %d, has header: %v", c.IPIndex, c.CVEIndex, c.Header)
+}
+
+func (c *CSV) Load(progress func(int64), callback func(ip, cve string)) error {
 	if c.IPIndex == 0 && c.CVEIndex == 0 {
 		return fmt.Errorf("run DetectIPCVE first")
 	}

@@ -132,6 +132,14 @@ func (w *Wizard) Pages() PageIndex {
 }
 
 func (c *Wizard) Window() fyne.CanvasObject {
+	if c.currentPage < pgIntro {
+		c.currentPage = pgIntro
+		log.Printf("Wrong current page: %v (%d)", c.currentPage, c.currentPage)
+	}
+	if c.currentPage >= pgFinish {
+		c.currentPage = pgFinish
+		log.Printf("Wrong current page: %v (%d)", c.currentPage, c.currentPage)
+	}
 	p := c.pages[c.currentPage]
 	c.UpdatePagesList()
 	middle := container.NewPadded(container.NewVBox(layout.NewSpacer(), p.Content(), layout.NewSpacer()))

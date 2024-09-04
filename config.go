@@ -115,7 +115,7 @@ func DefaultConfig() Config {
 			Target: TargetFile,
 			SMS: SMS{
 				IgnoreTLSErrors: false,
-				Timeout:         5 * time.Second,
+				Timeout:         5 * time.Minute,
 			},
 		},
 	}

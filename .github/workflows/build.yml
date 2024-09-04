@@ -32,7 +32,7 @@ jobs:
 
       - name: Archive to ZIP
         run: |
-          Compress-Archive -Path QeVR.exe -DestinationPath qevr_windows_amd64.zip
+          Compress-Archive -Path QeVR.exe, opengl32.dll -DestinationPath qevr_windows_amd64.zip
 
       - name: Release
         uses: softprops/action-gh-release@v1

@@ -12,12 +12,12 @@ import "io"
 
 type ProgressReader struct {
 	reader   io.Reader
-	callback func(int)
+	callback func(int64)
 }
 
 var _ io.Reader = ProgressReader{}
 
-func NewProgressReader(reader io.Reader, callback func(int)) ProgressReader {
+func NewProgressReader(reader io.Reader, callback func(int64)) ProgressReader {
 	return ProgressReader{
 		reader:   reader,
 		callback: callback,
@@ -25,6 +25,6 @@ func NewProgressReader(reader io.Reader, callback func(int)) ProgressReader {
 }
 func (r ProgressReader) Read(p []byte) (n int, err error) {
 	n, err = r.reader.Read(p)
-	r.callback(n)
+	r.callback(int64(n))
 	return
 }

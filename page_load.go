@@ -41,9 +41,11 @@ func (p *PageLoad) Next(previousPage PageIndex) PageIndex {
 }
 
 func (p *PageLoad) Content() fyne.CanvasObject {
+	colsLabel := widget.NewLabel(p.wiz.csv.String())
 	p.progressBar = widget.NewProgressBar()
 	p.statusLabel = widget.NewLabel("")
 	return container.NewVBox(
+		colsLabel,
 		p.progressBar,
 		p.statusLabel,
 	)
@@ -63,8 +65,8 @@ func (p *PageLoad) Run() {
 	}
 	var current int64 = 0
 	err = p.wiz.csv.Load(
-		func(i int) {
-			current += int64(i)
+		func(i int64) {
+			current += i
 			fraction := float64(current) / float64(size)
 			p.progressBar.SetValue(fraction)
 			p.statusLabel.SetText(p.wiz.model.Status())

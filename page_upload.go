@@ -26,8 +26,9 @@ import (
 
 type PageUpload struct {
 	BasePage
-	progressBar *widget.ProgressBar
-	statusLabel *widget.Label
+	progressBar         *widget.ProgressBar
+	progressBarInfinite *widget.ProgressBarInfinite
+	statusLabel         *widget.Label
 }
 
 var _ Page = &PageUpload{}
@@ -43,47 +44,68 @@ func (p *PageUpload) Next(previousPage PageIndex) PageIndex {
 
 func (p *PageUpload) Content() fyne.CanvasObject {
 	p.progressBar = widget.NewProgressBar()
+	p.progressBarInfinite = widget.NewProgressBarInfinite()
+	p.progressBar.Hide()
 	p.statusLabel = widget.NewLabel("")
 	return container.NewVBox(
 		p.progressBar,
+		p.progressBarInfinite,
 		p.statusLabel,
 	)
 }
 
 func (p *PageUpload) Run() {
 	p.statusLabel.SetText("Uploading...")
-	quit := p.Progress()
-	fileName, err := p.Upload()
-	quit()
+	//quit := p.Progress()
+	p.progressBar.SetValue(0.0)
+	p.progressBarInfinite.Hide()
+	p.progressBar.Show()
+	fileName, err := p.Upload(func(v float64) {
+		if v == 1.0 {
+			p.statusLabel.SetText("Processing...")
+			p.progressBar.Hide()
+			p.progressBarInfinite.Start()
+			p.progressBarInfinite.Show()
+		}
+		p.progressBar.SetValue(v)
+	})
+	//quit()
+	p.progressBarInfinite.Stop()
 	if err != nil {
 		log.Print(err)
-		p.statusLabel.SetText("Error")
+		errMsg := err.Error()
+		if len(errMsg) > 60 {
+			errMsg = "..." + errMsg[len(errMsg)-57:]
+		}
+		p.statusLabel.SetText(errMsg)
 		dialog.ShowError(err, p.wiz.win)
+		return
 	}
-	p.progressBar.SetValue(1.0)
+	//	p.progressBar.SetValue(1.0)
 	p.statusLabel.SetText(fmt.Sprintf("Vulnerability scan report successfully uploaded as %s\nGo to SMS console -> Profiles-> Vulnerability Scans (eVR)", fileName))
 }
 
-func (p *PageUpload) Progress() func() {
-	quit := make(chan struct{})
-	go func() {
-		const steps = 100
-		for i := 1; i < steps; i += 1 {
-			select {
-			case <-quit:
-				return
-			default:
-				time.Sleep(p.wiz.config.Output.SMS.Timeout / steps)
-				p.progressBar.SetValue(float64(i) / float64(steps))
+/*
+	func (p *PageUpload) Progress() func() {
+		quit := make(chan struct{})
+		go func() {
+			const steps = 100
+			for i := 1; i < steps; i += 1 {
+				select {
+				case <-quit:
+					return
+				default:
+					time.Sleep(p.wiz.config.Output.SMS.Timeout / steps)
+					p.progressBar.SetValue(float64(i) / float64(steps))
+				}
 			}
+		}()
+		return func() {
+			quit <- struct{}{}
 		}
-	}()
-	return func() {
-		quit <- struct{}{}
 	}
-}
-
-func (p *PageUpload) Upload() (string, error) {
+*/
+func (p *PageUpload) Upload(progress func(p float64)) (string, error) {
 	runTime := time.Now().UTC().Format("2006-01-02T15:04:05.000Z")
 	url := fmt.Sprintf("https://%s/vulnscanner/import?vendor=SMS-Standard&product=QeVR&version=1&runtime=%s/", p.wiz.config.Output.SMS.Address, runTime)
 
@@ -99,9 +121,15 @@ func (p *PageUpload) Upload() (string, error) {
 	if err != nil {
 		return "", err
 	}
-
 	writer.Close()
-	req, err := http.NewRequest("POST", url, body)
+	totalSize := int64(body.Len())
+	var currentSize int64
+	//var progressReader io.Reader = body
+	progressReader := NewProgressReader(body, func(s int64) {
+		currentSize += s
+		progress(float64(currentSize) / float64(totalSize))
+	})
+	req, err := http.NewRequest("POST", url, progressReader)
 	if err != nil {
 		return "", fmt.Errorf("failed to create request: %w", err)
 	}
@@ -115,7 +143,9 @@ func (p *PageUpload) Upload() (string, error) {
 		Transport: tr,
 		Timeout:   p.wiz.config.Output.SMS.Timeout,
 	}
+	//fmt.Println("client.Do(req)")
 	resp, err := client.Do(req)
+	//fmt.Println("client.Do(req): resp", resp, err)
 	if err != nil {
 		return "", fmt.Errorf("failed to send request: %w", err)
 	}
