@@ -15,7 +15,8 @@ import (
 	"strings"
 )
 
-const DefaultMaxCVEsPerIP = 2800
+// const DefaultMaxCVEsPerIP = 2800
+const DefaultMaxCVEsPerIP = 100
 
 type Accept func(string) bool
 
