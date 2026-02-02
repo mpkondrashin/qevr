@@ -16,7 +16,10 @@ import (
 )
 
 // const DefaultMaxCVEsPerIP = 2800
-const DefaultMaxCVEsPerIP = 100
+const (
+	DefaultMaxCVEsPerIP = 100
+	DefaultSeverity     = "MEDIUM"
+)
 
 type Accept func(string) bool
 
@@ -68,7 +71,7 @@ func (m *Model) Save(file io.Writer) error {
 	if err != nil {
 		return fmt.Errorf("error writing CSV header: %w", err)
 	}
-	severity := "MEDIUM"
+	severity := DefaultSeverity
 	for ip, cves := range m.data {
 		count := 1
 		var cvesList []string
